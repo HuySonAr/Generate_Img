@@ -2,6 +2,7 @@ const themeToggle = document.querySelector(".theme-toggle");
 const promptForm = document.querySelector(".prompt-form");
 const promptInput = document.querySelector(".prompt-input");
 const promptBtn = document.querySelector(".prompt-btn");
+const generateBtn = document.querySelector(".generate-btn");
 const modelSelect = document.getElementById("model-select");
 const countSelect = document.getElementById("count-select");
 const ratioSelect = document.getElementById("ratio-select");
@@ -42,9 +43,23 @@ const getImageDimesions = (aspectRatio, baseSize = 512) =>{
     return {width: calculateWidth, height: calculateHeight};
 }
 
+const updateImageCard = (imgIndex, imgUrl) =>{
+    const imgCard = document.getElementById(`img-card-${imgIndex}`);
+    if(!imgCard) return;
+
+    imgCard.classList.remove("loading");
+    imgCard.innerHTML = `<img src="${imgUrl}" class="result-img">
+                        <div class="img-overlay">
+                            <a href="${imgUrl}" class="img-download-btn" download="${Date.now()}.png">
+                                <i class="fa-solid fa-download"></i>
+                            </a>
+                        </div>`;
+}
+
 const generateImages = async (selectedModel, imageCount, aspectRatio, promptText) =>{
     const MODE_URL = `https://router.huggingface.co/hf-inference/models/${selectedModel}`;
     const {width, height} = getImageDimesions(aspectRatio);
+    generateBtn.setAttribute("disable", "true");
 
     const imagePromises = Array.from({length: imageCount}, async(_, i) =>{
         try {
@@ -56,20 +71,18 @@ const generateImages = async (selectedModel, imageCount, aspectRatio, promptText
 
             if (!res.ok) throw new Error((await res.json())?.error);
 
-            const blob = await res.blob();
-            const imgURL = URL.createObjectURL(blob);
-            const imgCard = document.getElementById(`img-card-${i}`);
-            imgCard.classList.remove("loading");
-            imgCard.querySelector(".result-img").src = imgURL;
-            imgCard.querySelector(".status-container").style.display = "none";
+            const result = await res.blob();
+            updateImageCard(i, URL.createObjectURL(result));
         } catch (error) {
             const imgCard = document.getElementById(`img-card-${i}`);
-            imgCard.querySelector(".status-text").textContent = "Error!";
+            imgCard.classList.replace("loading", "error");
+            imgCard.querySelector(".status-text").textContent = "Generation failed! check console for more details.";
             console.error(error);
         }
     });
 
     await Promise.allSettled(imagePromises);
+    generateBtn.removeAttribute("disable");
 }
 
 const createImageCards = (selectedModel, imageCount, aspectRatio, promptText) =>{
@@ -81,7 +94,6 @@ const createImageCards = (selectedModel, imageCount, aspectRatio, promptText) =>
                             <i class="fa-solid fa-triangle-exclamation"></i>
                             <p class="status-text">Generating...</p>
                         </div>
-                        <img src="../1.png" class="result-img">
                     </div>`
     }
 
