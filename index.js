@@ -48,26 +48,24 @@ const generateImages = async (selectedModel, imageCount, aspectRatio, promptText
 
     const imagePromises = Array.from({length: imageCount}, async(_, i) =>{
         try {
-            const res = await fetch(MODE_URL, {
-                headers: {
-                    Authorization: `Bearer ${apiKey}`,
-                    "Content-Type": "application/json",
-                    "x-user-cache": "false",
-                },
+            const res = await fetch("/api/generate", {
                 method: "POST",
-                body: JSON.stringify({
-                    inputs: promptText,
-                    parameters: {width, height},
-                    options: {wait_for_model: true, user_cache: false},
-                }),
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ selectedModel, imageCount: 1, aspectRatio, promptText }),
             });
 
-            if(!res.ok) throw new Error((await res.json())?.error);
-    
-            const result = await res.blob();
-            console.log(result);
+            if (!res.ok) throw new Error((await res.json())?.error);
+
+            const blob = await res.blob();
+            const imgURL = URL.createObjectURL(blob);
+            const imgCard = document.getElementById(`img-card-${i}`);
+            imgCard.classList.remove("loading");
+            imgCard.querySelector(".result-img").src = imgURL;
+            imgCard.querySelector(".status-container").style.display = "none";
         } catch (error) {
-            console.log(error)
+            const imgCard = document.getElementById(`img-card-${i}`);
+            imgCard.querySelector(".status-text").textContent = "Error!";
+            console.error(error);
         }
     });
 
