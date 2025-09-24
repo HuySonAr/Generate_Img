@@ -10,9 +10,24 @@ const gridGallery = document.querySelector(".gallery-grid");
 
 
 const examplePrompts = [
-    "A magic forest with glowing plants anf fairy homes among glant mushrooms",
-    "An old steampunk airship floating through golden clounds at sun set",
-    "A futue Mars colony with glass domes and gardens againist red mountains",
+  "A magic forest with glowing plants and fairy homes among giant mushrooms",
+  "An old steampunk airship floating through golden clouds at sunset",
+  "A future Mars colony with glass domes and gardens against red mountains",
+  "A cyberpunk city at night with neon lights and flying cars",
+  "A cozy cabin in the snowy woods with smoke rising from the chimney",
+  "A futuristic underwater city with glowing jellyfish and transparent tunnels",
+  "A medieval castle floating in the sky surrounded by dragons",
+  "A surreal desert landscape with melting clocks and giant eyes",
+  "A robot painter creating a masterpiece in a Paris art studio",
+  "A magical library with floating books and glowing runes",
+  "A retro diner on the moon with astronauts eating burgers",
+  "A giant whale flying through a cloudy sky above a quiet village",
+  "A fantasy warrior riding a phoenix through a stormy battlefield",
+  "A peaceful zen garden with bonsai trees and koi ponds at sunset",
+  "A haunted Victorian mansion with flickering lanterns and fog",
+  "A futuristic train speeding through a neon-lit tunnel in space",
+  "A dreamlike forest with bioluminescent animals and crystal trees",
+  "A steampunk inventor's workshop filled with gears and glowing gadgets"
 ];
 
 (() => {
@@ -59,7 +74,7 @@ const updateImageCard = (imgIndex, imgUrl) =>{
 const generateImages = async (selectedModel, imageCount, aspectRatio, promptText) =>{
     // const MODE_URL = `https://router.huggingface.co/hf-inference/models/${selectedModel}`;
     // const {width, height} = getImageDimesions(aspectRatio);
-    generateBtn.setAttribute("disable", "true");
+    generateBtn.setAttribute("disabled", "true");
 
     const imagePromises = Array.from({length: imageCount}, async(_, i) =>{
         try {
@@ -82,7 +97,7 @@ const generateImages = async (selectedModel, imageCount, aspectRatio, promptText
     });
 
     await Promise.allSettled(imagePromises);
-    generateBtn.removeAttribute("disable");
+    generateBtn.removeAttribute("disabled");
 }
 
 const createImageCards = (selectedModel, imageCount, aspectRatio, promptText) =>{
