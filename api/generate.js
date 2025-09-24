@@ -1,4 +1,4 @@
-export default async function handeler(req, res) {
+export default async function handler(req, res) {
     const apiKey = process.env.HUGGINGFACE_API_KEY;
 
     if(req.method != "POST"){

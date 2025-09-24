@@ -30,18 +30,18 @@ const toggleTheme = () =>{
     themeToggle.querySelector("i").className = isDarkTheme ? "fa-solid fa-sun" : "fa-solid fa-moon";
 }
 
-const getImageDimesions = (aspectRatio, baseSize = 512) =>{
-    const [width, height] = aspectRatio.split("/").map(Number);
-    const scaleFactor = baseSize / Math.sqrt(width * height);
+// const getImageDimesions = (aspectRatio, baseSize = 512) =>{
+//     const [width, height] = aspectRatio.split("/").map(Number);
+//     const scaleFactor = baseSize / Math.sqrt(width * height);
 
-    let calculateWidth = Math.round(width * scaleFactor);
-    let calculateHeight = Math.round(height * scaleFactor);
+//     let calculateWidth = Math.round(width * scaleFactor);
+//     let calculateHeight = Math.round(height * scaleFactor);
 
-    calculateWidth = Math.floor(calculateHeight / 16) * 16;
-    calculateHeight = Math.floor(calculateHeight / 16) * 16;
+//     calculateWidth = Math.floor(calculateHeight / 16) * 16;
+//     calculateHeight = Math.floor(calculateHeight / 16) * 16;
 
-    return {width: calculateWidth, height: calculateHeight};
-}
+//     return {width: calculateWidth, height: calculateHeight};
+// }
 
 const updateImageCard = (imgIndex, imgUrl) =>{
     const imgCard = document.getElementById(`img-card-${imgIndex}`);
@@ -57,8 +57,8 @@ const updateImageCard = (imgIndex, imgUrl) =>{
 }
 
 const generateImages = async (selectedModel, imageCount, aspectRatio, promptText) =>{
-    const MODE_URL = `https://router.huggingface.co/hf-inference/models/${selectedModel}`;
-    const {width, height} = getImageDimesions(aspectRatio);
+    // const MODE_URL = `https://router.huggingface.co/hf-inference/models/${selectedModel}`;
+    // const {width, height} = getImageDimesions(aspectRatio);
     generateBtn.setAttribute("disable", "true");
 
     const imagePromises = Array.from({length: imageCount}, async(_, i) =>{
@@ -74,10 +74,10 @@ const generateImages = async (selectedModel, imageCount, aspectRatio, promptText
             const result = await res.blob();
             updateImageCard(i, URL.createObjectURL(result));
         } catch (error) {
+            console.log(error);
             const imgCard = document.getElementById(`img-card-${i}`);
             imgCard.classList.replace("loading", "error");
             imgCard.querySelector(".status-text").textContent = "Generation failed! check console for more details.";
-            console.error(error);
         }
     });
 
